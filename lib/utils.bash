@@ -56,15 +56,8 @@ get_platform() {
 
 get_arch() {
   local -r machine="$(uname -m)"
-  local -r upper_toolname=$(echo "${toolname}" | tr '[:upper:]' '[:lower:]')
-  local -r tool_specific_arch_override="ASDF_HASHICORP_OVERWRITE_ARCH_${upper_toolname}"
 
-  OVERWRITE_ARCH_TOOL=${!tool_specific_arch_override:-"false"}
-  OVERWRITE_ARCH=${OVERWRITE_ARCH_TOOL:-${ASDF_HASHICORP_OVERWRITE_ARCH}}
-
-  if [[ $OVERWRITE_ARCH != "false" ]]; then
-    echo "$OVERWRITE_ARCH"
-  elif [[ $machine == "arm64" ]] || [[ $machine == "aarch64" ]]; then
+  if [[ $machine == "arm64" ]] || [[ $machine == "aarch64" ]]; then
     echo "arm64"
   elif [[ $machine == *"arm"* ]] || [[ $machine == *"aarch"* ]]; then
     echo "arm"
@@ -96,6 +89,7 @@ install_version() {
 
     echo "$TOOL_NAME $version installation was successful!"
   ) || (
+    ls -al "$install_path"
     rm -rf "$install_path"
     fail "An error ocurred while installing $TOOL_NAME $version."
   )
