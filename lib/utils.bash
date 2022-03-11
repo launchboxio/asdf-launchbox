@@ -33,14 +33,46 @@ list_all_versions() {
 }
 
 download_release() {
-  local version filename url
+  local version filename url platform arch
   version="$1"
   filename="$2"
+  platform=$(get_platform)
+  arch=$(get_arch)
 
-  url="$GH_REPO/archive/v${version}.tar.gz"
+  url="$GH_REPO/releases/download/v${version}/launchbox-v${version}-${platform}-${arch}.tar.gz"
 
   echo "* Downloading $TOOL_NAME release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
+}
+
+get_platform() {
+  local -r kernel="$(uname -s)"
+  if [[ $OSTYPE == "msys" || $kernel == "CYGWIN"* || $kernel == "MINGW"* ]]; then
+    echo windows
+  else
+    uname | tr '[:upper:]' '[:lower:]'
+  fi
+}
+
+get_arch() {
+  local -r machine="$(uname -m)"
+  local -r upper_toolname=$(echo "${toolname}" | tr '[:upper:]' '[:lower:]')
+  local -r tool_specific_arch_override="ASDF_HASHICORP_OVERWRITE_ARCH_${upper_toolname}"
+
+  OVERWRITE_ARCH_TOOL=${!tool_specific_arch_override:-"false"}
+  OVERWRITE_ARCH=${OVERWRITE_ARCH_TOOL:-${ASDF_HASHICORP_OVERWRITE_ARCH}}
+
+  if [[ $OVERWRITE_ARCH != "false" ]]; then
+    echo "$OVERWRITE_ARCH"
+  elif [[ $machine == "arm64" ]] || [[ $machine == "aarch64" ]]; then
+    echo "arm64"
+  elif [[ $machine == *"arm"* ]] || [[ $machine == *"aarch"* ]]; then
+    echo "arm"
+  elif [[ $machine == *"386"* ]]; then
+    echo "386"
+  else
+    echo "amd64"
+  fi
 }
 
 install_version() {
@@ -53,9 +85,11 @@ install_version() {
   fi
 
   (
-    mkdir -p "$install_path"
-    cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
-
+    local -r bin_install_path="${install_path}/bin"
+    download_release "${version}" "${install_path}/launchbox.tar.gz"
+    tar -xvf "${install_path}/launchbox.tar.gz"
+    mv "${install_path}/launchbox" "${bin_install_path}/launchbox"
+    # TODO: Verify checksum
     local tool_cmd
     tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
     test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
