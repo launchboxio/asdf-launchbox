@@ -83,7 +83,6 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
-    tar -xvf "${install_path}/launchbox-v${version}-${platform}-${arch}.tar.gz"
     mv "${install_path}/launchbox" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
     local tool_cmd
@@ -93,7 +92,7 @@ install_version() {
     echo "$TOOL_NAME $version installation was successful!"
   ) || (
     ls -al "$install_path"
-#    rm -rf "$install_path"
+    rm -rf "$install_path"
     fail "An error ocurred while installing $TOOL_NAME $version."
   )
 }
