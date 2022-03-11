@@ -83,7 +83,9 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
+    echo "Checking install path"
     ls -al "${install_path}"
+    echo "Checking unzipped archive"
     ls -al "${install_path}/launchbox-v${version}-${platform}-${arch}"
     mv "${install_path}/launchbox-v${version}-${platform}-${arch}/launchbox/" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
