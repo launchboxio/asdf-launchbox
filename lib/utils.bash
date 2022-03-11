@@ -83,6 +83,8 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
+    echo "Checking download path"
+    ls -al $ASDF_DOWNLOAD_PATH
     echo "Checking install path"
     ls -al "${install_path}"
     echo "Checking unzipped archive"
