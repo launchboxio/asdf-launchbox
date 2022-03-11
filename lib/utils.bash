@@ -80,6 +80,7 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
+    mkdir -p "${bin_install_path}"
     mv "$ASDF_DOWNLOAD_PATH/launchbox" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
     local tool_cmd
