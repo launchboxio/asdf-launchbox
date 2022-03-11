@@ -80,13 +80,7 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
-    echo "Checking download path"
-    ls -al $ASDF_DOWNLOAD_PATH
-    echo "Checking install path"
-    ls -al "${install_path}"
-    echo "Checking unzipped archive"
-    ls -al "${install_path}/launchbox-v${version}-${platform}-${arch}"
-    mv "${install_path}/launchbox-v${version}-${platform}-${arch}/launchbox/" "${bin_install_path}/launchbox"
+    mv "$ASDF_DOWNLOAD_PATH/launchbox" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
     local tool_cmd
     tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
@@ -95,7 +89,7 @@ install_version() {
     echo "$TOOL_NAME $version installation was successful!"
   ) || (
     ls -al "$install_path"
-#    rm -rf "$install_path"
+    rm -rf "$install_path"
     fail "An error ocurred while installing $TOOL_NAME $version."
   )
 }
