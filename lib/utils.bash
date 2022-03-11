@@ -70,6 +70,8 @@ get_arch() {
 }
 
 install_version() {
+  local platform=$(get_platform)
+  local arch=$(get_arch)
   local install_type="$1"
   local version="$2"
   local install_path="$3"
@@ -80,7 +82,7 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
-    tar -xvf "${install_path}/launchbox.tar.gz"
+    tar -xvf "${install_path}/launchbox-v${version}-${platform}-${arch}.tar.gz"
     mv "${install_path}/launchbox" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
     local tool_cmd
