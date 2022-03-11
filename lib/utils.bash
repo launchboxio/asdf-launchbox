@@ -95,7 +95,7 @@ install_version() {
     echo "$TOOL_NAME $version installation was successful!"
   ) || (
     ls -al "$install_path"
-    rm -rf "$install_path"
+#    rm -rf "$install_path"
     fail "An error ocurred while installing $TOOL_NAME $version."
   )
 }
