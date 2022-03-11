@@ -40,11 +40,8 @@ download_release() {
   arch=$(get_arch)
 
   url="$GH_REPO/releases/download/v${version}/launchbox-v${version}-${platform}-${arch}.tar.gz"
-  echo "$url"
   echo "* Downloading $TOOL_NAME release $version..."
-  echo "$filename"
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
-  stat "${filename}"
 }
 
 get_platform() {
