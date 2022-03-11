@@ -42,6 +42,7 @@ download_release() {
   url="$GH_REPO/releases/download/v${version}/launchbox-v${version}-${platform}-${arch}.tar.gz"
 
   echo "* Downloading $TOOL_NAME release $version..."
+  echo "$filename"
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
@@ -79,7 +80,6 @@ install_version() {
 
   (
     local -r bin_install_path="${install_path}/bin"
-    download_release "${version}" "${install_path}/launchbox.tar.gz"
     tar -xvf "${install_path}/launchbox.tar.gz"
     mv "${install_path}/launchbox" "${bin_install_path}/launchbox"
     # TODO: Verify checksum
